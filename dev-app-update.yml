@@ -1,3 +1,4 @@
-provider: generic
-url: https://example.com/auto-updates
-updaterCacheDirName: elec-vite-101-updater
+provider: github
+owner: alexcode-cc
+repo: elecvite101
+updaterCacheDirName: elecvite101-updater

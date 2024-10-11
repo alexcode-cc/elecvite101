@@ -1,7 +1,14 @@
-appId: com.electron.app
-productName: elec-vite-101
+# see config at https://www.electron.build/configuration/configuration
+
+# 應用程式的唯一識別符號
+appId: com.github.elecvite101
+# 應用程式的產品名稱
+productName: elecvite101
+copyright: Copyright © 2023 Elec Vite Inc.
+# 構建資源所在的目錄
 directories:
   buildResources: build
+# 包含在最終應用程式構建中的檔案列表，這裡使用萬用字元 ! 表示排除不需要的檔案
 files:
   - '!**/.vscode/*'
   - '!src/*'
@@ -9,35 +16,114 @@ files:
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+# 哪些檔案將不會被壓縮，而是解壓到構建目錄
 asarUnpack:
   - resources/**
+# Windows 平臺配置
 win:
-  executableName: elec-vite-101
+  # 可執行檔名
+  executableName: elecvite
+  # 應用程式的圖示檔案路徑
+  icon: build/icons/logo.ico
+  # 構建型別
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - arm64
+        - ia32
+# NSIS 安裝器配置
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  # 安裝程式的生成名稱
+  artifactName: ${productName}-${os}-${version}-${arch}.${ext}
+  # 建立的桌面快捷方式名稱
   shortcutName: ${productName}
+  # 解除安裝時顯示的名稱
   uninstallDisplayName: ${productName}
+  # 建立桌面圖示
   createDesktopShortcut: always
+  # 是否允許 UAC 提升許可權
+  allowElevation: true
+  # 是否允許使用者更改安裝目錄
+  allowToChangeInstallationDirectory: true
+  # 是否一件安裝
+  oneClick: false
+  # 是否顯示輔助安裝程式的安裝模式安裝程式頁面（選擇按機器還是按使用者）
+  perMachine: true
+  # 自定義 nsis
+  include: build/installer.nsh
+# macOS 平臺配置
 mac:
+  # 可執行檔名
+  executableName: elecvite
+  # 應用程式的圖示檔案路徑
+  icon: build/icons/logo.icns
+  # 許可權繼承的檔案路徑
   entitlementsInherit: build/entitlements.mac.plist
+  # 擴充套件資訊，如許可權描述
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  # 是否啟用應用程式的 Notarization（蘋果的安全稽覈）
   notarize: false
-dmg:
-  artifactName: ${name}-${version}.${ext}
-linux:
+  darkModeSupport: true
+  category: public.app-category.video
+  # 構建型別
   target:
-    - AppImage
-    - snap
-    - deb
-  maintainer: electronjs.org
-  category: Utility
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+        - universal
+# macOS 平臺的 DMG 配置
+dmg:
+  # DMG 檔案的生成名稱
+  artifactName: ${productName}-${os}-${version}-${arch}.${ext}
+# Linux 平臺配置
+linux:
+  # 可執行檔名
+  executableName: elecvite
+  # 應用程式的圖示檔案路徑
+  icon: build/icons/logo.icns
+  # 構建型別
+  target:
+    - target: AppImage
+      arch:
+        - x64
+        - arm64
+    - target: rpm
+      arch:
+        - x64
+        - arm64
+    - target: deb
+      arch:
+        - x64
+        - arm64
+  # 維護者資訊
+  maintainer: hiram.top
+  # 應用程式類別
+  category: Audio;Video
+# AppImage 配置
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  #  AppImage 檔案的生成名稱
+  artifactName: ${productName}-${os}-${version}-${arch}.${ext}
+# rpm 配置
+rpm:
+  #  rpm 檔案的生成名稱
+  artifactName: ${productName}-${os}-${version}-${arch}.${ext}
+# deb 配置
+deb:
+  #  deb 檔案的生成名稱
+  artifactName: ${productName}-${os}-${version}-${arch}.${ext}
+# 是否在構建之前重新編譯原生模組
 npmRebuild: false
+# 自動更新的配置
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  # 更新提供商
+  provider: github
+  owner: "github"
+  repo: "elecvite"
+#electronDownload:
+#  mirror: https://npmmirror.com/mirrors/electron/
